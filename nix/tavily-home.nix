@@ -1,6 +1,11 @@
 # Composite home-manager module: install `tvly` once and symlink all Tavily
 # agent skills. Prefer this over importing each per-skill module separately.
-{ self, lib, pkgs, config, ... }:
+self: {
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   tavilySkillNames = [
     "tavily-best-practices"

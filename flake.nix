@@ -54,7 +54,7 @@
         import ./nix/home-modules.nix { inherit self lib; }
         // {
           default = import ./nix/home-manager.nix;
-          tavily = import ./nix/tavily-home.nix { inherit self lib; };
+          tavily = import ./nix/tavily-home.nix self;
         };
     };
 }
