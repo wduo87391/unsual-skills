@@ -1,10 +1,14 @@
 {
   lib,
-  python3Packages,
+  buildPythonPackage,
   fetchurl,
+  setuptools,
+  httpx,
+  requests,
+  tiktoken,
 }:
 
-python3Packages.buildPythonPackage rec {
+buildPythonPackage rec {
   pname = "tavily-python";
   version = "0.7.27";
   pyproject = true;
@@ -14,9 +18,9 @@ python3Packages.buildPythonPackage rec {
     hash = "sha256-P7vuf8fiUkebJkg15vlDtKgTlUKcG9QZ6AJNEb8sGDE=";
   };
 
-  build-system = with python3Packages; [ setuptools ];
+  build-system = [ setuptools ];
 
-  dependencies = with python3Packages; [
+  dependencies = [
     httpx
     requests
     tiktoken

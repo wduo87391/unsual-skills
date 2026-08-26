@@ -1,14 +1,22 @@
 {
   lib,
-  python3Packages,
+  buildPythonApplication,
+  hatchling,
   fetchurl,
   callPackage,
+  certifi,
+  click,
+  httpx,
+  psutil,
+  requests,
+  rich,
+  urllib3,
 }:
 
 let
   tavily-python = callPackage ./tavily-python.nix { };
 in
-python3Packages.buildPythonApplication rec {
+buildPythonApplication rec {
   pname = "tavily-cli";
   version = "0.1.6";
   pyproject = true;
@@ -18,9 +26,9 @@ python3Packages.buildPythonApplication rec {
     hash = "sha256-TnIgLBl3eUDydAFBuwUCT1js1z4CD/qi22d8FH1EIaM=";
   };
 
-  build-system = with python3Packages; [ hatchling ];
+  build-system = [ hatchling ];
 
-  dependencies = with python3Packages; [
+  dependencies = [
     certifi
     click
     httpx
