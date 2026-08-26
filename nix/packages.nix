@@ -24,5 +24,6 @@ in
   queue = callPackage ../queue { };
   screenshot-cli = pyCall ../screenshot-cli { };
   tasker-cli = pyCall ../tasker-cli { inherit android-tools makeWrapper; };
+  tavily-cli = pyCall ../tavily-cli { };
   weather-cli = pyCall ../weather-cli { };
 }

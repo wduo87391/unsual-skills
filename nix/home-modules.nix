@@ -7,18 +7,21 @@ let
   # module system deduplicates it when imported multiple times (e.g. directly
   # *and* via a variant like `browser-cli-with-extension`).
   mkBaseModule =
-    pkgName:
+    {
+      pkgName,
+      skillName ? pkgName,
+    }:
     { pkgs, config, ... }:
     let
       pkg = self.packages.${pkgs.stdenv.hostPlatform.system}.${pkgName};
-      skillDir = "${pkg}/share/skills/${pkgName}";
+      skillDir = "${pkg}/share/skills/${skillName}";
     in
     {
-      key = "mics-skills/base/${pkgName}";
+      key = "mics-skills/base/${pkgName}/${skillName}";
       home.packages = [ pkg ];
       home.file = lib.listToAttrs (
         map (
-          dir: lib.nameValuePair "${dir}/${pkgName}" { source = skillDir; }
+          dir: lib.nameValuePair "${dir}/${skillName}" { source = skillDir; }
         ) config.programs.mics-skills.skillDirs
       );
     };
@@ -27,13 +30,14 @@ let
     name: def:
     let
       pkgName = def.package or name;
+      skillName = def.skill or name;
       extra = def.extra or (_: { });
     in
     {
       key = "mics-skills/${name}";
       imports = [
         ./home-manager-common.nix
-        (mkBaseModule pkgName)
+        (mkBaseModule { inherit pkgName skillName; })
         (extra { inherit self; })
       ];
     };

@@ -1,5 +1,5 @@
 {
-  description = "LLM-useful CLI tools and skills";
+  description = "Personal fork of mics-skills — LLM-useful CLI tools and Tavily agent skills";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -50,8 +50,11 @@
 
       formatter = eachSystem ({ system, ... }: treefmtEval.${system}.config.build.wrapper);
 
-      homeModules = import ./nix/home-modules.nix { inherit self lib; } // {
-        default = import ./nix/home-manager.nix;
-      };
+      homeModules =
+        import ./nix/home-modules.nix { inherit self lib; }
+        // {
+          default = import ./nix/home-manager.nix;
+          tavily = import ./nix/tavily-home.nix { inherit self lib; };
+        };
     };
 }

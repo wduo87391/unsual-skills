@@ -1,6 +1,8 @@
-# mics-skills
+# unsual-skills
 
-A collection of CLI tools and skills designed to be useful for LLM agents.
+Personal fork of [Mic92/mics-skills](https://github.com/Mic92/mics-skills) — a
+collection of CLI tools and agent skills for LLM coding agents. Maintained
+independently; upstream PRs are not required.
 
 ## Tools
 
@@ -16,6 +18,7 @@ A collection of CLI tools and skills designed to be useful for LLM agents.
 | [pexpect-cli](pexpect-cli/)       | Persistent pexpect sessions for interactive terminal automation | [SKILL.md](pexpect-cli/skill/SKILL.md)    |
 | [screenshot-cli](screenshot-cli/) | Cross-platform screenshots for macOS and KDE Wayland            | [SKILL.md](screenshot-cli/skill/SKILL.md) |
 | [tasker-cli](tasker-cli/)         | Deploy and trigger Android Tasker tasks via WebUI and adb       | [SKILL.md](tasker-cli/skill/SKILL.md)     |
+| [tavily-cli](tavily-cli/)         | Tavily web search, extract, crawl, map, and research (`tvly`)   | [skills/](tavily-cli/skills/)             |
 | [weather-cli](weather-cli/)       | Weather forecasts worldwide via Bright Sky API (DWD/MOSMIX)     | [SKILL.md](weather-cli/skill/SKILL.md)    |
 
 Each tool ships its skill definition under `<tool>/skill/` (installed to
@@ -27,21 +30,13 @@ Each tool ships its skill definition under `<tool>/skill/` (installed to
 ### Using Nix Flakes
 
 ```bash
-nix run github:Mic92/mics-skills#browser-cli
-nix run github:Mic92/mics-skills#calendar-cli
-nix run github:Mic92/mics-skills#context7-cli
-nix run github:Mic92/mics-skills#db-cli
-nix run github:Mic92/mics-skills#gmaps-cli
-nix run github:Mic92/mics-skills#kagi-search
-nix run github:Mic92/mics-skills#n8n-cli
-nix run github:Mic92/mics-skills#pexpect-cli
-nix run github:Mic92/mics-skills#screenshot-cli
-nix run github:Mic92/mics-skills#tasker-cli
-nix run github:Mic92/mics-skills#weather-cli
+nix run github:wduo87391/unsual-skills#browser-cli
+nix run github:wduo87391/unsual-skills#tavily-cli
+nix run github:wduo87391/unsual-skills#kagi-search
 
 # Add to your flake inputs
 {
-  inputs.mics-skills.url = "github:Mic92/mics-skills";
+  inputs.unsual-skills.url = "github:wduo87391/unsual-skills";
 }
 ```
 
@@ -56,7 +51,7 @@ Add the flake input and import the module:
 ```nix
 # flake.nix
 {
-  inputs.mics-skills.url = "github:Mic92/mics-skills";
+  inputs.unsual-skills.url = "github:wduo87391/unsual-skills";
 }
 ```
 
@@ -64,14 +59,34 @@ Add the flake input and import the module:
 # home-manager configuration
 { inputs, pkgs, ... }:
 {
-  imports = [ inputs.mics-skills.homeManagerModules.default ];
+  imports = [ inputs.unsual-skills.homeManagerModules.default ];
 
   programs.mics-skills = {
     enable = true;
-    package = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
+    package = inputs.unsual-skills.packages.${pkgs.stdenv.hostPlatform.system};
   };
 }
 ```
+
+### Tavily CLI + skills
+
+Install `tvly` and all official Tavily agent skills in one module:
+
+```nix
+{ inputs, ... }:
+{
+  imports = [ inputs.unsual-skills.homeModules.tavily ];
+
+  programs.mics-skills.skillDirs = [
+    ".cursor/skills"
+    ".agents/skills"
+    ".pi/agent/skills"
+  ];
+}
+```
+
+Authenticate with `TAVILY_API_KEY` or `tvly login`. See
+[Tavily CLI docs](https://docs.tavily.com/documentation/tavily-cli.md).
 
 By default all skills are installed. To pick only the ones you need, set the
 `skills` option:
@@ -79,7 +94,7 @@ By default all skills are installed. To pick only the ones you need, set the
 ```nix
 programs.mics-skills = {
   enable = true;
-  package = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
+  package = inputs.unsual-skills.packages.${pkgs.stdenv.hostPlatform.system};
   skills = [
     "kagi-search"
     "pexpect-cli"
@@ -108,15 +123,16 @@ module installs its CLI tool and skill definition — no extra options needed:
 { inputs, ... }:
 {
   imports = [
-    inputs.mics-skills.homeModules.kagi-search
-    inputs.mics-skills.homeModules.pexpect-cli
+    inputs.unsual-skills.homeModules.kagi-search
+    inputs.unsual-skills.homeModules.tavily-search
+    inputs.unsual-skills.homeModules.pexpect-cli
     inputs.mics-skills.homeModules.screenshot-cli
   ];
 }
 ```
 
 > List available modules with
-> `nix eval github:Mic92/mics-skills#homeModules --apply builtins.attrNames`.
+> `nix eval github:wduo87391/unsual-skills#homeModules --apply builtins.attrNames`.
 
 ### Without home-manager
 
