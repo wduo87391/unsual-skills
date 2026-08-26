@@ -18,7 +18,7 @@ independently; upstream PRs are not required.
 | [pexpect-cli](pexpect-cli/)       | Persistent pexpect sessions for interactive terminal automation | [SKILL.md](pexpect-cli/skill/SKILL.md)    |
 | [screenshot-cli](screenshot-cli/) | Cross-platform screenshots for macOS and KDE Wayland            | [SKILL.md](screenshot-cli/skill/SKILL.md) |
 | [tasker-cli](tasker-cli/)         | Deploy and trigger Android Tasker tasks via WebUI and adb       | [SKILL.md](tasker-cli/skill/SKILL.md)     |
-| [tavily-cli](tavily-cli/)         | Tavily web search, extract, crawl, map, and research (`tvly`)   | [skills/](tavily-cli/skills/)             |
+| [tavily-cli](tavily-cli/)         | Tavily web search, extract, crawl, map, research (`tvly`)       | [SKILL.md](tavily-cli/skills/tavily/SKILL.md) |
 | [weather-cli](weather-cli/)       | Weather forecasts worldwide via Bright Sky API (DWD/MOSMIX)     | [SKILL.md](weather-cli/skill/SKILL.md)    |
 
 Each tool ships its skill definition under `<tool>/skill/` (installed to
@@ -68,9 +68,9 @@ Add the flake input and import the module:
 }
 ```
 
-### Tavily CLI + skills
+### Tavily CLI + skill
 
-Install `tvly` and all official Tavily agent skills in one module:
+Install `tvly` and a single unified `tavily` agent skill (~80 lines + on-demand references):
 
 ```nix
 { inputs, ... }:

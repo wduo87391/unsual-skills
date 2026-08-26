@@ -38,13 +38,6 @@
   queue = { };
   screenshot-cli = { };
   tasker-cli = { };
-  tavily-best-practices = { package = "tavily-cli"; };
-  tavily-cli = { };
-  tavily-crawl = { package = "tavily-cli"; };
-  tavily-dynamic-search = { package = "tavily-cli"; };
-  tavily-extract = { package = "tavily-cli"; };
-  tavily-map = { package = "tavily-cli"; };
-  tavily-research = { package = "tavily-cli"; };
-  tavily-search = { package = "tavily-cli"; };
+  tavily = { package = "tavily-cli"; };
   weather-cli = { };
 }

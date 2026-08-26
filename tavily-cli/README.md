@@ -1,40 +1,29 @@
-# Tavily CLI + Agent Skills
+# Tavily CLI + Agent Skill
 
 Nix package for the official [Tavily CLI](https://docs.tavily.com/documentation/tavily-cli)
-(`tvly`) bundled with [Tavily Agent Skills](https://docs.tavily.com/documentation/agent-skills)
-from [tavily-ai/skills](https://github.com/tavily-ai/skills).
+(`tvly`) with a single unified agent skill using progressive disclosure.
 
 ## Usage
 
 ```bash
-# Authenticate (or set TAVILY_API_KEY)
-tvly login --api-key tvly-YOUR_KEY
+tvly login --api-key tvly-YOUR_KEY   # or export TAVILY_API_KEY
 tvly --status
-
-# Search, extract, crawl, map, research
 tvly search "latest AI news" --json
 tvly extract "https://example.com" --json
-tvly map "https://docs.example.com" --json
-tvly crawl "https://docs.example.com" --max-depth 2
 tvly research "compare React vs Svelte" --model pro
 ```
 
-See [Tavily CLI docs](https://docs.tavily.com/documentation/tavily-cli.md) for full
-command reference.
+## Skill layout
 
-## Skills
+One skill at `$out/share/skills/tavily/`:
 
-The package ships these skills under `$out/share/skills/`:
+| File | Purpose |
+| ---- | ------- |
+| `SKILL.md` | Workflow, quick commands, context tips (~80 lines) |
+| `references/search.md` | Full search options (read on demand) |
+| `references/extract.md` | Extract options |
+| `references/map.md` | Map options |
+| `references/crawl.md` | Crawl options |
+| `references/research.md` | Research options |
 
-| Skill | Description |
-| ----- | ----------- |
-| `tavily-cli` | Overview and workflow for all Tavily commands |
-| `tavily-search` | Web search with LLM-optimized results |
-| `tavily-extract` | Extract clean content from URLs |
-| `tavily-map` | Discover URLs on a website |
-| `tavily-crawl` | Crawl and extract multiple pages |
-| `tavily-research` | Deep multi-source research with citations |
-| `tavily-best-practices` | Production integration reference |
-| `tavily-dynamic-search` | Dynamic search patterns |
-
-Install via home-manager — see the repo README.
+Install via `homeModules.tavily` — see the repo README.

@@ -7,16 +7,7 @@ self: {
   ...
 }:
 let
-  tavilySkillNames = [
-    "tavily-best-practices"
-    "tavily-cli"
-    "tavily-crawl"
-    "tavily-dynamic-search"
-    "tavily-extract"
-    "tavily-map"
-    "tavily-research"
-    "tavily-search"
-  ];
+  tavilySkillNames = [ "tavily" ];
 
   baseCli = self.packages.${pkgs.stdenv.hostPlatform.system}.tavily-cli;
   tavilyCfg = config.programs.mics-skills.tavily;
