@@ -13,11 +13,36 @@ let
     }:
     { pkgs, config, ... }:
     let
-      pkg = self.packages.${pkgs.stdenv.hostPlatform.system}.${pkgName};
-      skillDir = "${pkg}/share/skills/${skillName}";
+      system = pkgs.stdenv.hostPlatform.system;
+      basePkg = self.packages.${system}.${pkgName};
+      tavilyCfg = config.programs.mics-skills.tavily;
+      pkg =
+        if pkgName == "tavily-cli" then
+          import ./tavily-package.nix {
+            inherit lib pkgs tavilyCfg;
+            tavilyCli = basePkg;
+          }
+        else
+          basePkg;
+      skillDir = "${basePkg}/share/skills/${skillName}";
     in
     {
       key = "mics-skills/base/${pkgName}/${skillName}";
+
+      assertions = lib.optionals (pkgName == "tavily-cli") [
+        {
+          assertion =
+            lib.length (
+              lib.filter (x: x != null) [
+                tavilyCfg.apiKey
+                tavilyCfg.apiKeyFile
+                tavilyCfg.apiKeyCommand
+              ]
+            ) <= 1;
+          message = "programs.mics-skills.tavily: set at most one of apiKey, apiKeyFile, or apiKeyCommand.";
+        }
+      ];
+
       home.packages = [ pkg ];
       home.file = lib.listToAttrs (
         map (

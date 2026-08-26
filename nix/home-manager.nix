@@ -1,12 +1,33 @@
 {
   lib,
+  pkgs,
   config,
   ...
 }:
 let
   cfg = config.programs.mics-skills;
+  tavilyCfg = cfg.tavily;
 
   registry = import ./skills.nix;
+
+  tavilyPackage =
+    name:
+    let
+      base = cfg.package.${name};
+    in
+    if name == "tavily-cli" then
+      import ./tavily-package.nix {
+        inherit lib pkgs tavilyCfg;
+        tavilyCli = base;
+      }
+    else
+      base;
+
+  configuredTavilySources = lib.filter (x: x != null) [
+    tavilyCfg.apiKey
+    tavilyCfg.apiKeyFile
+    tavilyCfg.apiKeyCommand
+  ];
 
   # The legacy option module only exposes the "canonical" skills: entries that
   # map 1:1 onto a package of the same name (i.e. no packaging variants like
@@ -57,11 +78,18 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = lib.length configuredTavilySources <= 1;
+        message = "programs.mics-skills.tavily: set at most one of apiKey, apiKeyFile, or apiKeyCommand.";
+      }
+    ];
+
     warnings =
       lib.optional (cfg.skillsSrc != null)
         "programs.mics-skills.skillsSrc is deprecated and ignored; skill files now ship inside the packages.";
 
-    home.packages = map (name: cfg.package.${name}) cfg.skills;
+    home.packages = map tavilyPackage cfg.skills;
 
     # Symlink the skill directory shipped inside each package into every
     # configured agent skills directory.

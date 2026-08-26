@@ -12,26 +12,45 @@ let
     "tavily-research"
     "tavily-search"
   ];
+
+  baseCli = self.packages.${pkgs.stdenv.hostPlatform.system}.tavily-cli;
+  tavilyCfg = config.programs.mics-skills.tavily;
+
+  tvly = import ./tavily-package.nix {
+    inherit lib pkgs tavilyCfg;
+    tavilyCli = baseCli;
+  };
+
+  configuredSources = lib.filter (x: x != null) [
+    tavilyCfg.apiKey
+    tavilyCfg.apiKeyFile
+    tavilyCfg.apiKeyCommand
+  ];
 in
 {
-  imports = [ ./home-manager-common.nix ];
+  imports = [
+    ./home-manager-common.nix
+    ./tavily-options.nix
+  ];
 
-  config =
-    let
-      cfg = config.programs.mics-skills;
-      pkg = self.packages.${pkgs.stdenv.hostPlatform.system}.tavily-cli;
-    in
-    {
-      home.packages = lib.mkAfter [ pkg ];
+  config = {
+    assertions = [
+      {
+        assertion = lib.length configuredSources <= 1;
+        message = "programs.mics-skills.tavily: set at most one of apiKey, apiKeyFile, or apiKeyCommand.";
+      }
+    ];
 
-      home.file = lib.listToAttrs (
-        lib.concatMap (
-          dir:
-          map (name: {
-            name = "${dir}/${name}";
-            value.source = "${pkg}/share/skills/${name}";
-          }) tavilySkillNames
-        ) cfg.skillDirs
-      );
-    };
+    home.packages = lib.mkAfter [ tvly ];
+
+    home.file = lib.listToAttrs (
+      lib.concatMap (
+        dir:
+        map (name: {
+          name = "${dir}/${name}";
+          value.source = "${baseCli}/share/skills/${name}";
+        }) tavilySkillNames
+      ) config.programs.mics-skills.skillDirs
+    );
+  };
 }

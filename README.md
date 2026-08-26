@@ -85,8 +85,25 @@ Install `tvly` and all official Tavily agent skills in one module:
 }
 ```
 
-Authenticate with `TAVILY_API_KEY` or `tvly login`. See
-[Tavily CLI docs](https://docs.tavily.com/documentation/tavily-cli.md).
+#### API key options
+
+Set at most one of these under `programs.mics-skills.tavily`:
+
+```nix
+# Direct (avoid in committed configs — ends up in the Nix store)
+programs.mics-skills.tavily.apiKey = "tvly-…";
+
+# Read from a runtime secret file (recommended with sops-nix)
+programs.mics-skills.tavily.apiKeyFile = config.sops.secrets."pi/tavily_api_key".path;
+
+# Shell out to a password manager
+programs.mics-skills.tavily.apiKeyCommand = "rbw get tavily-api-key";
+```
+
+When none are set, `tvly` falls back to its own auth (`tvly login` or
+`TAVILY_API_KEY` in the environment).
+
+See [Tavily CLI docs](https://docs.tavily.com/documentation/tavily-cli.md).
 
 By default all skills are installed. To pick only the ones you need, set the
 `skills` option:

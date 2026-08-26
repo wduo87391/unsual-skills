@@ -6,6 +6,8 @@
 {
   key = "mics-skills/common";
 
+  imports = [ ./tavily-options.nix ];
+
   options.programs.mics-skills = {
     skillDirs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
